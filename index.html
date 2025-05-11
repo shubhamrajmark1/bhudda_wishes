@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>बुद्ध पूर्णिमा शुभकामना</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b0c10;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+    #gif {
+      width: 200px;
+      margin: 20px auto 10px;
+      display: block;
+      border-radius: 10px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #ffd700;
+    }
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      width: 80%;
+      max-width: 300px;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 20px;
+      border: 2px solid #ffd700;
+      background-color: transparent;
+      color: #ffd700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #ffd700;
+      color: #0b0c10;
+      transform: scale(1.05);
+    }
+  #shareContainer {
+      margin-top: 20px;
+      display: none;
+    }
+
+    /* 👇 Hide only the inner text, link and button (NOT affecting functionality) */
+    #shareContainer p,
+    #shareContainer a,
+    #shareContainer button {
+      display: none;
+    }
+    .stars {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: moveStar 10s linear infinite;
+    }
+    @keyframes moveStar {
+      0% {
+        transform: translateY(0px);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.2rem; }
+      input, button { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <img id="gif" src="buddha.gif" alt="Buddh Purnima GIF" />
+  <h1 id="animatedText"></h1>
+
+  <div id="mainSection">
+    <input type="text" id="nameInput" placeholder="Apna naam likhiye..." />
+    <br/>
+    <button onclick="generateLink()">भेजें</button>
+    <div id="shareContainer">
+      <p>इस लिंक को शेयर करें:</p>
+      <a id="generatedLink" href="#" target="_blank"></a>
+      <br/>
+      <button onclick="shareLink()">Share via supported apps</button>
+    </div>
+  </div>
+
+  <div id="starsContainer"></div>
+
+  <script>
+    function typeText(text, elementId) {
+      const element = document.getElementById(elementId);
+      let i = 0;
+      element.innerHTML = '';
+      const typing = setInterval(() => {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(typing);
+        }
+      }, 80);
+    }
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+      function generateLink() {
+    const name = document.getElementById("nameInput").value.trim();
+    if (name === "") {
+      alert("कृपया अपना नाम दर्ज करें।");
+      return;
+    }
+
+    const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(name)}`;
+    const generatedLink = document.getElementById("generatedLink");
+    generatedLink.href = link;
+    generatedLink.textContent = link;
+    document.getElementById("shareContainer").style.display = "block";
+
+    // 🔁 Try auto-share using Web Share API
+    const shareText = `${name} की तरफ से 🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏\n${link}`;
+    if (navigator.share) {
+      navigator.share({
+        title: "बुद्ध पूर्णिमा शुभकामना",
+        text: shareText,
+        url: link
+      }).catch((error) => {
+        console.log("Auto share failed:", error);
+        // Optional: fallback to manual sharing
+      });
+    } else {
+      alert("आपका डिवाइस ऑटो-शेयरिंग सपोर्ट नहीं करता, कृपया मैन्युअली शेयर करें।");
+    }
+  }
+
+
+    function shareLink() {
+      const name = document.getElementById("nameInput").value.trim();
+      const shareText = `${name} की तरफ से 🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏\n${window.location.href.split("?")[0]}?name=${encodeURIComponent(name)}`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: "बुद्ध पूर्णिमा शुभकामना",
+          text: shareText,
+          url: window.location.href.split("?")[0] + `?name=${encodeURIComponent(name)}`
+        }).catch((error) => console.log("Sharing failed", error));
+      } else {
+        alert("Sorry, your device does not support direct sharing.");
+      }
+    }
+
+    function createStars() {
+      const starContainer = document.getElementById("starsContainer");
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement("div");
+        star.classList.add("stars");
+        star.style.top = Math.random() * 100 + "vh";
+        star.style.left = Math.random() * 100 + "vw";
+        star.style.animationDuration = (5 + Math.random() * 5) + "s";
+        starContainer.appendChild(star);
+      }
+    }
+
+    window.onload = function () {
+      const senderName = getQueryParam('name');
+      createStars();
+
+      if (senderName) {
+        const decodedName = decodeURIComponent(senderName);
+        document.getElementById("mainSection").style.display = "none";
+        const finalMessage = `${decodedName} की तरफ से 🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏`;
+        typeText(finalMessage, "animatedText");
+      } else {
+        typeText("🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏", "animatedText");
+      }
+    };
+  </script>
+</body>
+</html>
