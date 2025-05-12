@@ -12,7 +12,8 @@
       background-color: #0b0c10;
       color: white;
       text-align: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      padding-bottom: 70px; /* ad ke liye space */
     }
     #gif {
       width: 200px;
@@ -50,12 +51,10 @@
       color: #0b0c10;
       transform: scale(1.05);
     }
-  #shareContainer {
+    #shareContainer {
       margin-top: 20px;
       display: none;
     }
-
-    /* 👇 Hide only the inner text, link and button (NOT affecting functionality) */
     #shareContainer p,
     #shareContainer a,
     #shareContainer button {
@@ -70,22 +69,29 @@
       animation: moveStar 10s linear infinite;
     }
     @keyframes moveStar {
-      0% {
-        transform: translateY(0px);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh);
-        opacity: 0;
-      }
+      0% { transform: translateY(0px); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
     }
     @media (max-width: 600px) {
       h1 { font-size: 1.2rem; }
       input, button { font-size: 14px; }
     }
+
+    /* 🔻 Bottom Ad Styling */
+    #adBanner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: #000;
+      text-align: center;
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
+
   <img id="gif" src="buddha.gif" alt="Buddh Purnima GIF" />
   <h1 id="animatedText"></h1>
 
@@ -102,6 +108,20 @@
   </div>
 
   <div id="starsContainer"></div>
+
+  <!-- 🔻 Bottom Fixed Ad Code -->
+  <div id="adBanner">
+    <script type="text/javascript">
+      atOptions = {
+        'key': 'e62ec7e559dd4c9c5b8ce1b3d17a3ea4',
+        'format': 'iframe',
+        'height': 50,
+        'width': 320,
+        'params': {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/e62ec7e559dd4c9c5b8ce1b3d17a3ea4/invoke.js"></script>
+  </div>
 
   <script>
     function typeText(text, elementId) {
@@ -123,35 +143,32 @@
       return urlParams.get(param);
     }
 
-      function generateLink() {
-    const name = document.getElementById("nameInput").value.trim();
-    if (name === "") {
-      alert("कृपया अपना नाम दर्ज करें।");
-      return;
+    function generateLink() {
+      const name = document.getElementById("nameInput").value.trim();
+      if (name === "") {
+        alert("कृपया अपना नाम दर्ज करें।");
+        return;
+      }
+
+      const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(name)}`;
+      const generatedLink = document.getElementById("generatedLink");
+      generatedLink.href = link;
+      generatedLink.textContent = link;
+      document.getElementById("shareContainer").style.display = "block";
+
+      const shareText = `${name} की तरफ से 🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏\n${link}`;
+      if (navigator.share) {
+        navigator.share({
+          title: "बुद्ध पूर्णिमा शुभकामना",
+          text: shareText,
+          url: link
+        }).catch((error) => {
+          console.log("Auto share failed:", error);
+        });
+      } else {
+        alert("आपका डिवाइस ऑटो-शेयरिंग सपोर्ट नहीं करता, कृपया मैन्युअली शेयर करें।");
+      }
     }
-
-    const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(name)}`;
-    const generatedLink = document.getElementById("generatedLink");
-    generatedLink.href = link;
-    generatedLink.textContent = link;
-    document.getElementById("shareContainer").style.display = "block";
-
-    // 🔁 Try auto-share using Web Share API
-    const shareText = `${name} की तरफ से 🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏\n${link}`;
-    if (navigator.share) {
-      navigator.share({
-        title: "बुद्ध पूर्णिमा शुभकामना",
-        text: shareText,
-        url: link
-      }).catch((error) => {
-        console.log("Auto share failed:", error);
-        // Optional: fallback to manual sharing
-      });
-    } else {
-      alert("आपका डिवाइस ऑटो-शेयरिंग सपोर्ट नहीं करता, कृपया मैन्युअली शेयर करें।");
-    }
-  }
-
 
     function shareLink() {
       const name = document.getElementById("nameInput").value.trim();
