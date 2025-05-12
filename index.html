@@ -198,18 +198,27 @@
     }
 
     window.onload = function () {
-      const senderName = getQueryParam('name');
-      createStars();
+  const senderName = getQueryParam('name');
+  createStars();
 
-      if (senderName) {
-        const decodedName = decodeURIComponent(senderName);
-        document.getElementById("mainSection").style.display = "none";
-        const finalMessage = `${decodedName} की तरफ से 🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏`;
-        typeText(finalMessage, "animatedText");
-      } else {
-        typeText("🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏", "animatedText");
-      }
-    };
-  </script>
+  if (senderName) {
+    const decodedName = decodeURIComponent(senderName);
+    document.getElementById("nameInput").value = decodedName;
+    
+    // Don't hide the main section — allow sharing again
+    document.getElementById("shareContainer").style.display = "block";
+
+    const generatedLink = document.getElementById("generatedLink");
+    const link = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(decodedName)}`;
+    generatedLink.href = link;
+    generatedLink.textContent = link;
+
+    const finalMessage = `${decodedName} की तरफ से 🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏`;
+    typeText(finalMessage, "animatedText");
+  } else {
+    typeText("🙏 बुद्ध पूर्णिमा की शुभकामनाएं 🙏", "animatedText");
+  }
+};
+</script>
 </body>
 </html>
